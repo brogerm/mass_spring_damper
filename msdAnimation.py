@@ -29,7 +29,7 @@ class msdAnimation:
         self.draw_block(z)
         self.draw_wall(z)
         self.draw_spring(z)
-        # self.drawDamper(z)
+        self.draw_damper(z)
         self.ax.axis('equal') # This will cause the image to not distort
 
         # After each function has been called, initialization is over.
@@ -53,10 +53,10 @@ class msdAnimation:
                 fc='limegreen', ec='black'))
             self.ax.add_patch(self.handle[0])  # Add the patch to the axes
         else:
-            self.handle[0].center = xy
+            self.handle[0].xy = xy
 
     def draw_wall(self, z):
-        x = z - self.blockWidth/2 - 6    # x coordinate of lower left corner
+        x = -6    # x coordinate of lower left corner
         y = 0    # y coordinate of lower left corner
         xy = (x, y)  # Center of block
 
@@ -72,39 +72,32 @@ class msdAnimation:
                 fc='black'))
             self.ax.add_patch(self.handle[1])  # Add the patch to the axes
         else:
-            self.handle[1].center = xy
+            self.handle[1].xy = xy
 
     def draw_spring(self, z):
-        midpoint = self.blockHeight / 2 * 1.5
+        wall = -6 + self.blockWidth / 2     # x coordinate of right face of wall
+        dx = -wall + z - self.blockWidth / 2  # distance between wall and left face of block
+        y = self.blockHeight / 2 * 1.5
         ll = 0.5                                    # link length
-        dy = np.sqrt([ll**2 - ((z + 3) / 9)**2])    # change in y
-        wall = z - 6          # x coordinate of right face of wall
-        dx = z+6 - self.blockWidth/2    # distance between wall and left face of block
+        coils = 12                                  # the number of spring coils (must be evenly divisible by 3)
+        dy = np.sqrt([ll**2 - (dx / (coils*4))**2])     # change in y
+        print(dy)
 
-        X = [
-            wall,
-            wall + dx/9,
-            wall + 2*dx/9,
-            wall + 3*dx/9,
-            wall + 4*dx/9,
-            wall + 5*dx/9,
-            wall + 6*dx/9,
-            wall + 7*dx/9,
-            wall + 8*dx/9,
-            wall + 9*dx/9
-        ]
-        Y = [
-            midpoint,
-            midpoint+dy,
-            midpoint-dy,
-            midpoint,
-            midpoint + dy,
-            midpoint - dy,
-            midpoint,
-            midpoint + dy,
-            midpoint - dy,
-            midpoint
-        ]
+        X = [wall]
+        Y = []
+
+        i = 1
+        while i < coils:
+            X.append(wall + i*dx/coils)
+            i+=1
+
+        j = 1
+        while j <= coils/4:
+            Y.append(y)
+            Y.append(y+dy[0])
+            Y.append(y)
+            Y.append(y-dy[0])
+            j+=1
 
         # When the class is initialized, a line object will be
         # created and added to the axes. After initialization, the
@@ -118,52 +111,32 @@ class msdAnimation:
             self.handle[2].set_xdata(X)  # Update the spring
             self.handle[2].set_ydata(Y)
 
-    # def drawRightRotor(self, z, h, theta, d):
-    #     x = z + (self.cl/2 + d)*np.cos(theta)   # x coordinate
-    #     y = h - self.cl/2*np.sin(theta) - d*np.sin(theta)   # y coordinate
-    #     xy = (x,y)                                   # Center of circle
-    #
-    #     # When the class is initialized, a CirclePolygon patch object will
-    #     # be created and added to the axes. After initialization, the
-    #     # CirclePolygon patch object will only be updated.
-    #     if self.flagInit == True:
-    #         # Create the CirclePolygon patch and append its handle
-    #         # to the handle list
-    #         self.handle.append(mpatches.Ellipse(xy,
-    #           width=0.2, height=0.1,
-    #           angle=-theta * 180/np.pi,
-    #           fc='limegreen', ec='black'))
-    #         self.ax.add_patch(self.handle[1])  # Add the patch to the axes
-    #     else:
-    #         self.handle[1].center = xy
-    #         self.handle[1].angle = -theta * 180/np.pi
-    #
-    # def drawLeftRotor(self, z, h, theta, d):
-    #     x = z - (self.cl/2 + d)*np.cos(theta)   # x coordinate
-    #     y = h + self.cl/2*np.sin(theta) + d*np.sin(theta)   # y coordinate
-    #     xy = (x,y)                                   # Center of circle
-    #
-    #     # When the class is initialized, a CirclePolygon patch object will
-    #     # be created and added to the axes. After initialization, the
-    #     # CirclePolygon patch object will only be updated.
-    #     if self.flagInit == True:
-    #         # Create the CirclePolygon patch and append its handle
-    #         # to the handle list
-    #         self.handle.append(mpatches.Ellipse(xy,
-    #           width=0.2, height=0.1,
-    #           angle=-theta * 180/np.pi,
-    #           fc='limegreen', ec='black'))
-    #         self.ax.add_patch(self.handle[2])  # Add the patch to the axes
-    #     else:
-    #         self.handle[2].center = xy
-    #         self.handle[2].angle = -theta * 180/np.pi
+    def draw_damper(self, z):
+        x = -6 + self.blockWidth/2
+        y = self.blockHeight / 2 * 0.5
+        dx = -x + z - self.blockWidth / 2  # distance between wall and left face of block
+        xy = (x, y)  # Center of block
+
+        # When the class is initialized, a Rectangular patch object will
+        # be created and added to the axes. After initialization, the
+        # Rectangular patch object will only be updated.
+        if self.flagInit == True:
+            # Create the Rectangle patch and append its handle
+            # to the handle list
+            self.handle.append(mpatches.Rectangle(xy,
+                width=dx, height=self.blockHeight/12,
+                angle=0, fill=True,
+                fc='blue'))
+            self.ax.add_patch(self.handle[3])  # Add the patch to the axes
+        else:
+            self.handle[3].xy = xy
 
 
 # Used see the animation from the command line
 if __name__ == "__main__":
 
     simAnimation = msdAnimation()    # Create Animate object
-    z = 0.0                               # Position of cart, m
+    z = 1.5                             # Position of cart, m
     simAnimation.draw_msd([z])  # Draw the mass spring damper system
     #plt.show()
     # Keeps the program from closing until the user presses a button.
