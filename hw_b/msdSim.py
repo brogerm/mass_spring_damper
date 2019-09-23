@@ -21,17 +21,17 @@ animation = msdAnimation()
 
 t = P.t_start  # time starts at t_start
 while t < P.t_end:  # main simulation loop
-    # Get referenced inputs from signal generators
-    ref_input = reference.square(t)
-    f = fRef.sawtooth(t)
-    z = zRef.sin(t)
     # set variables
     Force = [0]
+
+    t_next_plot = t + P.t_plot
+    while t < t_next_plot:  # updates control and dynamics at faster simulation rate
+        msd.propagateDynamics(Force)  # Propagate the dynamics
+        t = t + P.Ts  # advance time by Ts
+
     # update animation
-    animation.draw_msd([z[0]])
-    # dataPlot.updatePlots(t, ref_input, msd.states(), f)
-    plt.pause(0.1)
-    t = t + P.t_plot
+    animation.draw_msd(msd.states())
+    plt.pause(P.t_plot)
 
 # Keeps the program from closing until the user presses a button.
 print('Press key to close')

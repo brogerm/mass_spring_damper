@@ -4,7 +4,7 @@ import control as cnt
 
 # Physical parameters of the block
 m = 5       # kg
-k = 10       # N/m
+k = 3       # N/m
 b = 0.5     # N m s
 
 # Parameters for animation of block
