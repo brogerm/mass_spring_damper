@@ -21,6 +21,8 @@ animation = msdAnimation()
 
 t = P.t_start  # time starts at t_start
 while t < P.t_end:  # main simulation loop
+    r = reference.square(t)
+
     # set variables
     Force = [0]
 
@@ -31,6 +33,7 @@ while t < P.t_end:  # main simulation loop
 
     # update animation
     animation.draw_msd(msd.states())
+    dataPlot.updatePlots(t, r, msd.states(), Force)
     plt.pause(P.t_plot)
 
 # Keeps the program from closing until the user presses a button.
