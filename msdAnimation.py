@@ -76,28 +76,31 @@ class msdAnimation:
 
     def draw_spring(self, z):
         wall = -6 + self.blockWidth / 2     # x coordinate of right face of wall
-        dx = -wall + z - self.blockWidth / 2  # distance between wall and left face of block
+        deltaX = -wall + z - self.blockWidth / 2  # distance between wall and left face of block
+        coils = 6                                # the number of spring coils
+        dx = deltaX/(coils * 2)
         y = self.blockHeight / 2 * 1.5
         ll = 0.5                                    # link length
-        coils = 12                                  # the number of spring coils (must be evenly divisible by 3)
-        dy = np.sqrt([ll**2 - (dx / (coils*4))**2])     # change in y
-        print(dy)
+        dy = np.sqrt([ll**2 - dx**2])     # change in y
 
         X = [wall]
-        Y = []
+        Y = [y]
 
+        lastX = wall
         i = 1
-        while i < coils:
-            X.append(wall + i*dx/coils)
-            i+=1
+        while i <= coils * 4:
+            X.append(lastX + dx/2)
+            X.append(lastX + dx)
+            lastX = lastX + dx
+            i+=2
 
         j = 1
-        while j <= coils/4:
-            Y.append(y)
+        while j < len(X):
             Y.append(y+dy[0])
             Y.append(y)
             Y.append(y-dy[0])
-            j+=1
+            Y.append(y)
+            j+=4
 
         # When the class is initialized, a line object will be
         # created and added to the axes. After initialization, the
@@ -114,7 +117,7 @@ class msdAnimation:
     def draw_damper(self, z):
         x = -6 + self.blockWidth/2
         y = self.blockHeight / 2 * 0.5
-        dx = -x + z - self.blockWidth / 2  # distance between wall and left face of block
+        deltaX = -x + z - self.blockWidth / 2  # distance between wall and left face of block
         xy = (x, y)  # Center of block
 
         # When the class is initialized, a Rectangular patch object will
@@ -124,12 +127,12 @@ class msdAnimation:
             # Create the Rectangle patch and append its handle
             # to the handle list
             self.handle.append(mpatches.Rectangle(xy,
-                width=dx, height=self.blockHeight/12,
+                width=deltaX, height=self.blockHeight/12,
                 angle=0, fill=True,
                 fc='blue'))
             self.ax.add_patch(self.handle[3])  # Add the patch to the axes
         else:
-            self.handle[3].xy = xy
+            self.handle[3].set_width(deltaX)
 
 
 # Used see the animation from the command line

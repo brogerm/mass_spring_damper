@@ -39,7 +39,6 @@ class plotData:
         self.time_history.append(t)  # time
         self.zref_history.append(reference[0])  # reference base position
         self.z_history.append(states[0])  # base position
-        self.theta_history.append(180.0/np.pi*states[1])  # rod angle (converted to degrees)
         self.Force_history.append(ctrl[0])  # force on the base
 
         # update the plots with associated histories
