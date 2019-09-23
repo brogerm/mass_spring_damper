@@ -3,8 +3,8 @@ import numpy as np
 import control as cnt
 
 # Physical parameters of the block
-m = 5       # kg
-k = 3       # N/m
+m = 5.0       # kg
+k = 3.0       # N/m
 b = 0.5     # N m s
 
 # Parameters for animation of block
@@ -12,7 +12,7 @@ blockWidth = 2  # units
 blockHeight = 2   # units
 
 # Initial conditions
-z0 = 1    # initial displacement (m)
+z0 = 1.5    # initial displacement (m)
 zdot0 = 0     # initial velocity (m/s)
 
 # Simulation Parameters

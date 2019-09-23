@@ -35,7 +35,7 @@ class msdDynamics:
         k2 = self.derivatives(self.state + P.Ts/2*k1, u)
         k3 = self.derivatives(self.state + P.Ts/2*k2, u)
         k4 = self.derivatives(self.state + P.Ts*k3, u)
-        self.state = self.state + P.Ts/6 * (k1 + 2*k2 + 2*k3 + k4)
+        self.state += P.Ts/6 * (k1 + 2*k2 + 2*k3 + k4)
 
     def derivatives(self, state, u):
         '''

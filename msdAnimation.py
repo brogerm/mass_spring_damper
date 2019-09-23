@@ -131,6 +131,7 @@ class msdAnimation:
                 angle=0, fill=True,
                 fc='blue'))
             self.ax.add_patch(self.handle[3])  # Add the patch to the axes
+            self.flagInit = False
         else:
             self.handle[3].set_width(deltaX)
 
