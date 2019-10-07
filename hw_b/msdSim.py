@@ -24,16 +24,17 @@ while t < P.t_end:  # main simulation loop
     r = reference.square(t)
 
     # set variables
-    Force = [0]
+    # Force = [0]
 
     t_next_plot = t + P.t_plot
     while t < t_next_plot:  # updates control and dynamics at faster simulation rate
+        Force = fRef.sin(t)
         msd.propagateDynamics(Force)  # Propagate the dynamics
         t = t + P.Ts  # advance time by Ts
 
     # update animation
     animation.draw_msd(msd.states())
-    dataPlot.updatePlots(t, r, msd.states(), Force)
+    # dataPlot.updatePlots(t, r, msd.states(), Force)
     plt.pause(P.t_plot)
 
 # Keeps the program from closing until the user presses a button.
