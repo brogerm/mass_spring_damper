@@ -5,7 +5,7 @@ sys.path.append('..')  # add parent directory
 import msdParam as P
 from msdController import msdController
 from signalGenerator import signalGenerator
-from msdAnimation import msdAnimation
+from msdAnimation import msdAnimationd
 from msdDynamics import msdDynamics
 from plotData import plotData
 
