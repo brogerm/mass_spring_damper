@@ -25,5 +25,10 @@ t_plot = 0.1  # the plotting and animation is updated at this rate
 kp = 4.5
 kd = 14.5
 
+# dirty derivative parameters
+sigma = 0.05  # cutoff freq for dirty derivative
+beta = (2.0*sigma-Ts)/(2.0*sigma+Ts)  # dirty derivative gain
+
 # saturation limit
-F_sat = 5
+F_sat = 6
+F_max = F_sat
